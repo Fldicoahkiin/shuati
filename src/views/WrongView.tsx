@@ -5,7 +5,7 @@ import { actions, useStore } from '@/lib/store'
 import { toast } from '@/lib/toast'
 import { Button, Card, EmptyState, SectionTitle, TypeTag } from '@/components/ui'
 
-export function WrongView() {
+export function WrongView({ onStart }: { onStart: () => void }) {
   const wrong = useStore((s) => s.wrong)
   const banks = useStore((s) => s.banks)
 
@@ -26,7 +26,8 @@ export function WrongView() {
       shuffleQuestions: true,
       shuffleOptions: false,
     })
-    if (!s) toast('没有可重练的错题', 'bad')
+    if (s) onStart()
+    else toast('没有可重练的错题', 'bad')
   }
 
   if (items.length === 0) {

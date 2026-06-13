@@ -21,7 +21,7 @@ const REDO_CONFIG: ExamConfig = {
   shuffleOptions: false,
 }
 
-export function ResultView({ record, onRetake }: { record: ExamRecord; onRetake: () => void }) {
+export function ResultView({ record, onStart }: { record: ExamRecord; onStart: () => void }) {
   const [onlyWrong, setOnlyWrong] = useState(false)
   const correctness = useMemo(
     () => record.questions.map((q, i) => isCorrect(q, record.answers[i])),
@@ -32,7 +32,7 @@ export function ResultView({ record, onRetake }: { record: ExamRecord; onRetake:
   function redoWrong() {
     const qs = record.questions.filter((_, i) => !correctness[i])
     if (qs.length === 0) return toast('全部答对，没有错题', 'ok')
-    actions.startQuestions(qs, { ...REDO_CONFIG, count: qs.length })
+    if (actions.startQuestions(qs, { ...REDO_CONFIG, count: qs.length })) onStart()
   }
 
   return (
@@ -51,7 +51,7 @@ export function ResultView({ record, onRetake }: { record: ExamRecord; onRetake:
               只做错题（{wrongCount}）
             </Button>
           )}
-          <Button icon={<RotateCcw size={15} />} onClick={onRetake}>
+          <Button icon={<RotateCcw size={15} />} onClick={onStart}>
             重新组卷
           </Button>
         </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { ExamRecord } from '@/types'
 import { useStore } from '@/lib/store'
 import { useToasts } from '@/lib/toast'
-import { cn } from '@/components/ui'
+import { cn } from '@/lib/cn'
 import { TopBar, type View } from '@/components/TopBar'
 import { BankView } from '@/views/BankView'
 import { ExamView } from '@/views/ExamView'
@@ -20,15 +20,11 @@ export default function App() {
     document.documentElement.classList.toggle('dark', theme === 'dark')
   }, [theme])
 
-  // 从成绩页发起「只做错题」会新建会话，自动切到答题界面
-  useEffect(() => {
-    if (session && view === 'result') setView('exam')
-  }, [session, view])
-
   function showResult(r: ExamRecord) {
     setResult(r)
     setView('result')
   }
+  const goExam = () => setView('exam')
 
   return (
     <div className="min-h-svh">
@@ -36,11 +32,11 @@ export default function App() {
       <main className="mx-auto max-w-3xl px-4 py-5">
         {view === 'bank' && <BankView />}
         {view === 'exam' && <ExamView onResult={showResult} />}
-        {view === 'wrong' && <WrongView />}
+        {view === 'wrong' && <WrongView onStart={goExam} />}
         {view === 'history' && <HistoryView onReview={showResult} />}
         {view === 'result' &&
           (result ? (
-            <ResultView record={result} onRetake={() => setView('exam')} />
+            <ResultView record={result} onStart={goExam} />
           ) : (
             <HistoryView onReview={showResult} />
           ))}
