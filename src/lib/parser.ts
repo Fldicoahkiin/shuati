@@ -142,6 +142,34 @@ function stripAnswerKeyLines(text: string): string {
     .join('\n')
 }
 
+/**
+ * 兜底选项解析：用于「A 文本 B 文本 C 文本」这类仅空格分隔、无 .／顿号 的选项。
+ * 要求字母从 A 起连续（A,B,C…），避免把题干里散落的字母误当选项。
+ */
+function looseParseOptions(text: string): { options: RawOption[]; stem: string } | null {
+  const re = /(?:^|[\s，,；;])([A-H])(?=[\s.、．)，,])/g
+  const marks: { letter: string; at: number }[] = []
+  let m: RegExpExecArray | null
+  while ((m = re.exec(text)) !== null) {
+    marks.push({ letter: m[1], at: m.index + m[0].length - 1 })
+  }
+  const startIdx = marks.findIndex((x) => x.letter === 'A')
+  if (startIdx < 0) return null
+  const seq = [marks[startIdx]]
+  for (let i = startIdx + 1; i < marks.length; i++) {
+    if (marks[i].letter === String.fromCharCode(65 + seq.length)) seq.push(marks[i])
+  }
+  if (seq.length < 2) return null
+
+  const options: RawOption[] = seq.map((mark, i) => {
+    const from = mark.at + 1
+    const to = i + 1 < seq.length ? seq[i + 1].at : text.length
+    const optText = text.slice(from, to).replace(/^[\s.、．)，,]+/, '').trim()
+    return { letter: mark.letter, text: optText }
+  })
+  return { options, stem: text.slice(0, seq[0].at).trim() }
+}
+
 function parseBlock(block: string): RawBlock | null {
   if (!block || block.length < 3) return null
 
@@ -190,7 +218,7 @@ function parseBlock(block: string): RawBlock | null {
   }
 
   // 逐行拆出选项与题干
-  const options: RawOption[] = []
+  let options: RawOption[] = []
   const stemParts: string[] = []
   for (const rawLine of content.split('\n')) {
     const line = rawLine.trim()
@@ -223,6 +251,16 @@ function parseBlock(block: string): RawBlock | null {
       if (!options.find((o) => o.letter === pos.letter)) {
         options.push({ letter: pos.letter, text: optText })
       }
+    }
+  }
+
+  // 严格规则没找到足够选项时，尝试「空格分隔」的兜底解析
+  if (options.length < 2) {
+    const loose = looseParseOptions(content)
+    if (loose) {
+      options = loose.options
+      stemParts.length = 0
+      stemParts.push(loose.stem)
     }
   }
 

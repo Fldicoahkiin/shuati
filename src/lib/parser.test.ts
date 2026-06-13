@@ -130,6 +130,22 @@ D. 意识就是物质`
     expect(q.stem).not.toContain('三')
   })
 
+  it('选项以空格分隔（无 . 或顿号）也能解析', () => {
+    const txt = `1. 矛盾的基本属性是（ D ）
+A 普遍性 B 共性 C 绝对性 D 同一性和斗争性`
+    const q = parseBank(txt).questions[0]
+    expect(q.options).toEqual(['普遍性', '共性', '绝对性', '同一性和斗争性'])
+    expect(q.answer).toEqual([3])
+  })
+
+  it('混合分隔符（前几项空格、末项带点）也能解析', () => {
+    const txt = `1. 测试（ B ）
+A 甲 B 乙 C 丙 D. 丁`
+    const q = parseBank(txt).questions[0]
+    expect(q.options).toEqual(['甲', '乙', '丙', '丁'])
+    expect(q.answer).toEqual([1])
+  })
+
   it('题干含其他中文括号时不误判为答案', () => {
     const txt = `1. （ A ）为意识的产生提供了客观需要。
 A. 劳动
