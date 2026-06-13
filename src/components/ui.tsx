@@ -9,7 +9,7 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type Size = 'sm' | 'md'
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-brand text-white hover:bg-brand-strong shadow-sm',
+  primary: 'bg-brand text-on-brand hover:bg-brand-strong shadow-sm',
   secondary: 'bg-card-2 text-ink-strong border border-line hover:border-line-strong',
   ghost: 'text-ink-soft hover:text-ink-strong hover:bg-card-2',
   danger: 'text-bad border border-bad/30 hover:bg-bad-soft',
@@ -146,7 +146,7 @@ export function Toggle({
       >
         <span
           className={cn(
-            'absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform',
+            'absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-on-brand transition-transform',
             checked && 'translate-x-5',
           )}
         />

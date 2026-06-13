@@ -28,7 +28,7 @@ export function AnswerSheet({ total, answered, flagged, current, correctness, on
               review && ok === false && 'bg-bad text-white',
               review && ok == null && 'bg-card-2 text-ink-soft',
               // 答题态：已答高亮
-              !review && answered[i] && 'bg-brand text-white',
+              !review && answered[i] && 'bg-brand text-on-brand',
               !review && !answered[i] && 'bg-card-2 text-ink-soft hover:text-ink',
               // 当前题、标记
               current === i && 'ring-2 ring-brand ring-offset-2 ring-offset-card',

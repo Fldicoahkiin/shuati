@@ -83,7 +83,7 @@ export function QuestionCard({ question, index, value, onChange, reveal, flagged
                   className={cn(
                     'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold',
                     st === 'idle' && 'bg-black/5 text-ink dark:bg-white/10',
-                    st === 'picked' && 'bg-brand text-white',
+                    st === 'picked' && 'bg-brand text-on-brand',
                     st === 'correct' && 'bg-ok text-white',
                     st === 'wrong' && 'bg-bad text-white',
                     st === 'missed' && 'bg-ok/70 text-white',

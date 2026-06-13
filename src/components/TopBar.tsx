@@ -34,7 +34,7 @@ export function TopBar({ view, onNavigate }: { view: View; onNavigate: (v: View)
           onClick={() => onNavigate('bank')}
           className="flex items-center gap-2 font-semibold text-ink-strong"
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand text-sm font-bold text-on-brand">
             刷
           </span>
           <span className="text-[15px]">刷题</span>
