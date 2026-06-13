@@ -179,6 +179,16 @@ function parseBlock(block: string): RawBlock | null {
     }
   }
 
+  // 答案嵌在题干括号里：「…体现了（ B ）特征」「（ ABC ）」「（对）」
+  // 仅当括号内是纯字母/对错时才视为答案，避免误吃「（自然界）」等正文括号
+  if (!inlineAnswer) {
+    const pm = content.match(/\(\s*([A-Ha-h](?:[A-Ha-h\s]{0,10})|对|错|正确|错误|√|×)\s*\)/)
+    if (pm) {
+      inlineAnswer = pm[1].replace(/\s+/g, '').trim()
+      content = content.replace(pm[0], '（ ）') // 抹成空括号，避免题干泄题
+    }
+  }
+
   // 逐行拆出选项与题干
   const options: RawOption[] = []
   const stemParts: string[] = []
@@ -220,6 +230,12 @@ function parseBlock(block: string): RawBlock | null {
   stem = stem
     .replace(/解析\s*:.*$/i, '')
     .replace(/来源\s*:.*$/i, '')
+    // 去掉粘连到题干末尾的章节/题型小标题（如「… 三、判断题」「第二章」）
+    .replace(/\s*第\s*[一二三四五六七八九十百零\d]+\s*[章节]\s*$/, '')
+    .replace(
+      /\s*[一二三四五六七八九十]\s*[、.．]?\s*(?:单项选择|多项选择|判断)题?\s*[:：]?\s*$/,
+      '',
+    )
     .trim()
 
   if (!stem) return null

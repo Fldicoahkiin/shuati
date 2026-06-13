@@ -86,6 +86,62 @@ B. 错
   })
 })
 
+describe('parseBank · 题干括号内答案', () => {
+  it('单选：答案在题干括号 （ B ）', () => {
+    const txt = `1. 中国的首都是（ B ）。
+A. 上海
+B. 北京
+C. 广州
+D. 深圳`
+    const q = parseBank(txt).questions[0]
+    expect(q.type).toBe('single')
+    expect(q.answer).toEqual([1])
+    expect(q.stem).not.toContain('B') // 答案已从题干抹除
+  })
+
+  it('多选：答案在题干括号 （ ABC ）（含内部空格）', () => {
+    const txt = `1. 以下哪些是（ A BC ）。
+A. 甲
+B. 乙
+C. 丙
+D. 丁`
+    const q = parseBank(txt).questions[0]
+    expect(q.type).toBe('multi')
+    expect(q.answer).toEqual([0, 1, 2])
+  })
+
+  it('判断：答案在题干括号 （对）/（错）', () => {
+    const txt = `1. 地球是圆的。（对）
+2. 太阳从西边升起。（ 错 ）`
+    const { questions } = parseBank(txt)
+    expect(questions[0].type).toBe('tf')
+    expect(questions[0].answer).toEqual([0])
+    expect(questions[1].answer).toEqual([1])
+  })
+
+  it('清除粘连到题干末尾的章节/题型小标题', () => {
+    const txt = `1. 以下对意识本质的描述正确的是（ AB ） 三、判断题
+A. 意识是人脑的机能
+B. 意识是客观世界的主观映象
+C. 主观内容和客观形式的统一
+D. 意识就是物质`
+    const q = parseBank(txt).questions[0]
+    expect(q.stem).not.toContain('判断题')
+    expect(q.stem).not.toContain('三')
+  })
+
+  it('题干含其他中文括号时不误判为答案', () => {
+    const txt = `1. （ A ）为意识的产生提供了客观需要。
+A. 劳动
+B. 思维
+C. 自然界
+D. 刺激`
+    const q = parseBank(txt).questions[0]
+    expect(q.type).toBe('single')
+    expect(q.answer).toEqual([0])
+  })
+})
+
 describe('parseBank · 统一答案块', () => {
   it('区间式 1-3 BCA 按题号回填，且不污染最后一题题干', () => {
     const txt = `1. 中国的首都？
