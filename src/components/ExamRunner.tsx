@@ -35,6 +35,16 @@ export function ExamRunner({
   const current = questions[currentIndex]
   const answered = answeredFlags(session)
 
+  // 练习模式的揭晓时机：单选/判断点选即揭晓；多选需点「确认作答」后才揭晓
+  const [revealed, setRevealed] = useState<Set<number>>(() => new Set())
+  function revealOf(i: number): boolean {
+    if (!isPractice) return false
+    return questions[i].type === 'multi' ? revealed.has(i) : answered[i]
+  }
+  function confirmMulti(i: number) {
+    setRevealed((s) => new Set(s).add(i))
+  }
+
   function pick(index: number, value: number[] | null) {
     actions.answer(index, value)
   }
@@ -57,7 +67,7 @@ export function ExamRunner({
         const i = Number(e.key) - 1
         const q = questions[currentIndex]
         if (i >= q.options.length) return
-        if (isPractice && answered[currentIndex]) return
+        if (revealOf(currentIndex)) return // 已揭晓则锁定
         if (q.type === 'multi') {
           const cur = answers[currentIndex] ?? []
           const next = cur.includes(i) ? cur.filter((x) => x !== i) : [...cur, i].sort((a, b) => a - b)
@@ -119,8 +129,13 @@ export function ExamRunner({
           index={currentIndex}
           value={answers[currentIndex]}
           flagged={flagged[currentIndex]}
-          reveal={isPractice && answered[currentIndex]}
+          reveal={revealOf(currentIndex)}
           onChange={(v) => pick(currentIndex, v)}
+          onConfirm={
+            isPractice && current.type === 'multi'
+              ? () => confirmMulti(currentIndex)
+              : undefined
+          }
         />
         <div className="flex items-center justify-between gap-2">
           <Button
@@ -169,8 +184,9 @@ export function ExamRunner({
           index={i}
           value={answers[i]}
           flagged={flagged[i]}
-          reveal={isPractice && answered[i]}
+          reveal={revealOf(i)}
           onChange={(v) => pick(i, v)}
+          onConfirm={isPractice && q.type === 'multi' ? () => confirmMulti(i) : undefined}
         />
       ))}
       <Button variant="primary" className="self-center" icon={<Send size={15} />} onClick={submit}>

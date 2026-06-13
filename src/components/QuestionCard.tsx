@@ -1,6 +1,6 @@
 import type { Question } from '@/types'
 import { Check, X, Flag } from 'lucide-react'
-import { cn, TypeTag } from './ui'
+import { Button, cn, TypeTag } from './ui'
 import { OPTION_LETTERS } from '@/lib/parser'
 
 type OptState = 'idle' | 'picked' | 'correct' | 'wrong' | 'missed'
@@ -16,13 +16,25 @@ interface Props {
   index: number
   value: number[] | null
   onChange?: (v: number[] | null) => void
+  /** 多选练习模式：选完后点「确认作答」才揭晓判分 */
+  onConfirm?: () => void
   reveal?: boolean
   flagged?: boolean
   id?: string
 }
 
-export function QuestionCard({ question, index, value, onChange, reveal, flagged, id }: Props) {
+export function QuestionCard({
+  question,
+  index,
+  value,
+  onChange,
+  onConfirm,
+  reveal,
+  flagged,
+  id,
+}: Props) {
   const locked = reveal || !onChange
+  const showConfirm = !!onConfirm && !reveal && question.type === 'multi'
 
   function pick(i: number) {
     if (locked || !onChange) return
@@ -100,6 +112,18 @@ export function QuestionCard({ question, index, value, onChange, reveal, flagged
           )
         })}
       </div>
+
+      {showConfirm && (
+        <Button
+          variant="primary"
+          size="sm"
+          className="mt-4"
+          disabled={!value || value.length === 0}
+          onClick={onConfirm}
+        >
+          确认作答
+        </Button>
+      )}
     </div>
   )
 }

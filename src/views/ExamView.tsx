@@ -16,7 +16,7 @@ export function ExamView({ onResult }: { onResult: (r: ExamRecord) => void }) {
   const session = useStore((s) => s.session)
   const bank = useStore(activeBank)
 
-  if (session) return <ExamRunner session={session} onResult={onResult} />
+  if (session) return <ExamRunner key={session.id} session={session} onResult={onResult} />
 
   return <ExamConfigForm hasBank={!!bank && bank.questions.length > 0} bankQuestions={bank?.questions ?? []} />
 }
