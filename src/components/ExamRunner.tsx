@@ -67,7 +67,9 @@ export function ExamRunner({
         const i = Number(e.key) - 1
         const q = questions[currentIndex]
         if (i >= q.options.length) return
-        if (revealOf(currentIndex)) return // 已揭晓则锁定
+        const isRevealed =
+          isPractice && (q.type === 'multi' ? revealed.has(currentIndex) : answered[currentIndex])
+        if (isRevealed) return // 已揭晓则锁定
         if (q.type === 'multi') {
           const cur = answers[currentIndex] ?? []
           const next = cur.includes(i) ? cur.filter((x) => x !== i) : [...cur, i].sort((a, b) => a - b)
@@ -79,7 +81,7 @@ export function ExamRunner({
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [paged, currentIndex, questions, answers, answered, isPractice])
+  }, [paged, currentIndex, questions, answers, answered, isPractice, revealed])
 
   function submit() {
     const unanswered = answers.filter((a) => a == null || a.length === 0).length

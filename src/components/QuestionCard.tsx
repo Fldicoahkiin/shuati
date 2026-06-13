@@ -1,6 +1,7 @@
 import type { Question } from '@/types'
 import { Check, X, Flag } from 'lucide-react'
-import { Button, cn, TypeTag } from './ui'
+import { Button, TypeTag } from './ui'
+import { cn } from '@/lib/cn'
 import { OPTION_LETTERS } from '@/lib/parser'
 
 type OptState = 'idle' | 'picked' | 'correct' | 'wrong' | 'missed'
@@ -79,6 +80,8 @@ export function QuestionCard({
               key={i}
               onClick={() => pick(i)}
               disabled={locked}
+              data-testid="opt"
+              data-state={st}
               className={cn(
                 'group flex items-center gap-3 rounded-xl border-2 px-4 text-left transition-colors',
                 question.type === 'tf' ? 'flex-1 justify-center py-4 text-base font-semibold' : 'py-3.5',
@@ -118,6 +121,7 @@ export function QuestionCard({
           variant="primary"
           size="sm"
           className="mt-4"
+          data-testid="confirm-answer"
           disabled={!value || value.length === 0}
           onClick={onConfirm}
         >

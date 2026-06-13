@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 import { ChevronRight, History } from 'lucide-react'
 import type { ExamRecord } from '@/types'
 import { actions, useStore } from '@/lib/store'
-import { Button, Card, EmptyState, SectionTitle, cn } from '@/components/ui'
+import { Button, Card, EmptyState, SectionTitle } from '@/components/ui'
+import { cn } from '@/lib/cn'
 
 function fmtDate(ts: number): string {
   const d = new Date(ts)

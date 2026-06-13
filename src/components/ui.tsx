@@ -1,9 +1,6 @@
 import { type ButtonHTMLAttributes, type ReactNode, useEffect } from 'react'
 import { X } from 'lucide-react'
-
-export function cn(...xs: (string | false | null | undefined)[]): string {
-  return xs.filter(Boolean).join(' ')
-}
+import { cn } from '@/lib/cn'
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type Size = 'sm' | 'md'

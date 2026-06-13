@@ -3,7 +3,8 @@ import { Play, BookOpen, PencilLine } from 'lucide-react'
 import type { ExamConfig, ExamRecord, QuestionType } from '@/types'
 import { actions, useStore, activeBank } from '@/lib/store'
 import { toast } from '@/lib/toast'
-import { Button, Card, EmptyState, Segmented, Toggle, cn } from '@/components/ui'
+import { Button, Card, EmptyState, Segmented, Toggle } from '@/components/ui'
+import { cn } from '@/lib/cn'
 import { ExamRunner } from '@/components/ExamRunner'
 
 const TYPE_OPTIONS: { value: QuestionType; label: string }[] = [

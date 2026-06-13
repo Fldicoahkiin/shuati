@@ -17,7 +17,8 @@ import { SAMPLE_BANK_TEXT } from '@/lib/sample'
 import { actions, useStore, activeBank } from '@/lib/store'
 import { toast } from '@/lib/toast'
 import { contentHash } from '@/lib/id'
-import { Button, Card, EmptyState, Modal, SectionTitle, TypeTag, cn } from '@/components/ui'
+import { Button, Card, EmptyState, Modal, SectionTitle, TypeTag } from '@/components/ui'
+import { cn } from '@/lib/cn'
 import { EditQuestionModal } from '@/components/EditQuestionModal'
 
 function typeBreakdown(qs: { type: string }[]) {
@@ -257,6 +258,7 @@ export function BankView() {
       </Card>
 
       <EditQuestionModal
+        key={editing?.id ?? 'closed'}
         bankId={bank?.id ?? ''}
         question={editing}
         onClose={() => setEditing(null)}
@@ -293,7 +295,7 @@ export function BankView() {
 
 function QuestionList({ bank, onEdit }: { bank: Bank; onEdit: (q: Question) => void }) {
   return (
-    <ul className="max-h-[460px] divide-y divide-line overflow-y-auto">
+    <ul data-testid="question-list" className="max-h-[460px] divide-y divide-line overflow-y-auto">
       {bank.questions.map((q, i) => (
         <li key={q.id} className="group flex items-center gap-3 py-2.5 pr-1">
           <span className="w-6 shrink-0 text-right text-xs text-ink-soft">{i + 1}</span>

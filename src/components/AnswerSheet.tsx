@@ -1,4 +1,4 @@
-import { cn } from './ui'
+import { cn } from '@/lib/cn'
 
 interface Props {
   total: number

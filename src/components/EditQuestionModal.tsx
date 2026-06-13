@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Plus, Trash2 } from 'lucide-react'
 import type { Question, QuestionType } from '@/types'
 import { OPTION_LETTERS } from '@/lib/parser'
 import { actions } from '@/lib/store'
 import { toast } from '@/lib/toast'
-import { Button, Modal, Segmented, cn } from './ui'
+import { cn } from '@/lib/cn'
+import { Button, Modal, Segmented } from './ui'
 
 interface Props {
   bankId: string
@@ -12,19 +13,14 @@ interface Props {
   onClose: () => void
 }
 
+// 由调用方按 question.id 设置 key 重新挂载，故可直接用 props 初始化状态
 export function EditQuestionModal({ bankId, question, onClose }: Props) {
-  const [type, setType] = useState<QuestionType>('single')
-  const [stem, setStem] = useState('')
-  const [options, setOptions] = useState<string[]>(['', ''])
-  const [correct, setCorrect] = useState<number[]>([])
-
-  useEffect(() => {
-    if (!question) return
-    setType(question.type)
-    setStem(question.stem)
-    setOptions(question.type === 'tf' ? ['对', '错'] : [...question.options])
-    setCorrect([...question.answer])
-  }, [question])
+  const [type, setType] = useState<QuestionType>(question?.type ?? 'single')
+  const [stem, setStem] = useState(question?.stem ?? '')
+  const [options, setOptions] = useState<string[]>(
+    question ? (question.type === 'tf' ? ['对', '错'] : [...question.options]) : ['', ''],
+  )
+  const [correct, setCorrect] = useState<number[]>(question ? [...question.answer] : [])
 
   function toggleCorrect(i: number) {
     if (type === 'multi') {

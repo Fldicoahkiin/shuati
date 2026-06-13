@@ -12,7 +12,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { actions, useStore } from '@/lib/store'
-import { cn } from './ui'
+import { cn } from '@/lib/cn'
 
 export type View = 'bank' | 'exam' | 'wrong' | 'history' | 'result'
 
